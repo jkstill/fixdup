@@ -64,7 +64,7 @@ while (<>) {
 		$addressHash{$digest} = 'Original';
 	}
 
-	print Dumper(\@data);
+	#print Dumper(\@data);
 	
 	unless ($data[STREETADDRESS]) {
 		#print "Skipping - no address\n"; 
@@ -72,13 +72,17 @@ while (<>) {
 		next;
 	}
 
+	# get names and phones
+	push @{$addresses{$data[STREETADDRESS]}->{'NAMES'}{$data[LNAME]}}, [ $data[FNAME], $data[PHONE]];
 
-	# get names
-	push @{$addresses{$data[STREETADDRESS]}->{$data[LNAME]}}, $data[FNAME];
+	# the following fields will be useful for sorting
+	$addresses{$data[STREETADDRESS]}->{'CITY'} = $data[CITY];
+	$addresses{$data[STREETADDRESS]}->{'STATE'} = $data[STATE];
+	$addresses{$data[STREETADDRESS]}->{'ZIPCODE'} = $data[ZIPCODE];
+	$addresses{$data[STREETADDRESS]}->{'STREETNUM'} = $data[STREETNUM];
+	$addresses{$data[STREETADDRESS]}->{'STREETNAME'} = qq{$data[STREETLOC] $data[STREETNAME] $data[STREETDESG]};
 
-	# get phones - may be several
 
-	#print 'Addresses: ' , Dumper($addresses{$data[STREETADDRESS]});
 
 }
 
