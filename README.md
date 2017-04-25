@@ -18,6 +18,7 @@ Two scripts that are used to clean up some address data.
       8 Street Locater ( NW, SW, etc)
       9 Street Name
      10 Street Designator (ST, CT, DR, Drive, etc)
+     11 Apt#
 </pre>
 
 Data may have multiple rows for a single address.
