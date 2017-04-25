@@ -194,7 +194,7 @@ foreach my $address (keys %addresses) {
 				}
 				$cleanData->{$address}{'PHONE'}{$lastName} = substr($cleanData->{$address}{'PHONE'}{$lastName},0,length($cleanData->{$address}{'PHONE'}{$lastName})-2);
 		} else {
-			$cleanData->{$address}{'PHONE'}{$lastName} .= 'TEST - ' . $phones[0];
+			$cleanData->{$address}{'PHONE'}{$lastName} .= $phones[0];
 		}
 
 	}
