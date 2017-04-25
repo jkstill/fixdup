@@ -38,6 +38,7 @@ use constant STREETNUM => 7;
 use constant STREETLOC => 8; # loc = locater = NW, SW, ...
 use constant STREETNAME => 9; 
 use constant STREETDESG => 10;  
+use constant APTNUM => 11;
 
 # in the event we want to report these later
 #my %recsWithoutAddresses=();
@@ -51,11 +52,25 @@ my %addressHash=();
 
 while (<>) {
 
-	#chomp; # do not use if unix2dos has been run on the input files
+	my $line=$_;
+	next if $line =~  /^\s+$/;
+	#chomp $line; # do not use if unix2dos has been run on the input files
 	# remove leading space in OR (state)
-	s/ OR/OR/g;
+	$line =~ s/ OR/OR/g;
 
-	my @data = split(/,/);
+	# remove blanks
+	#$line =~ s/\s+,/,/g;
+	#print "$line\n";
+
+	my @data = split(/,/,$line);
+
+	next unless @data;
+	my $aptNum='';
+	$aptNum = $data[APTNUM] if $data[APTNUM];
+	chomp $aptNum;
+
+	#print "Apt: |$aptNum|\n" if $aptNum;
+
 	my $md5 =  Digest::MD5->new;
 	$md5->add(@data);
 	my $digest = $md5->hexdigest;
@@ -80,14 +95,17 @@ while (<>) {
 	# get names and phones
 
 	# the following fields will be useful for sorting
-	my $key = $data[STREETADDRESS] . '-' . $data[CITY];
+	my $key = $data[STREETLOC] . '-' . $data[STREETADDRESS] . '-' . $data[CITY] . '-' . $aptNum;
 
 	push @{$addresses{$key}->{'NAMES'}{$data[LNAME]}}, [ $data[FNAME], $data[PHONE]];
 	$addresses{$key}->{'CITY'} = $data[CITY];
 	$addresses{$key}->{'STATE'} = $data[STATE];
 	$addresses{$key}->{'ZIPCODE'} = $data[ZIPCODE];
 	$addresses{$key}->{'STREETNUM'} = $data[STREETNUM];
-	$addresses{$key}->{'STREETNAME'} = qq{$data[STREETLOC] $data[STREETNAME] $data[STREETDESG]};
+	$addresses{$key}->{'STREETLOC'} = $data[STREETLOC];
+	$addresses{$key}->{'STREETNAME'} = qq{$data[STREETNAME] $data[STREETDESG]};
+	$addresses{$key}->{'STREETADDRESS'} = qq{$data[STREETADDRESS]};
+	$addresses{$key}->{'APTNUM'} = $aptNum;
 
 }
 
@@ -123,9 +141,11 @@ foreach my $address (keys %addresses) {
 	my $data = $addresses{$address};
 	print 'Work Data: ' , Dumper($data) if $debug;
 
-
+	$cleanData->{$address}{'STREETLOC'} = $data->{'STREETLOC'};
 	$cleanData->{$address}{'STREETNAME'} = $data->{'STREETNAME'};
 	$cleanData->{$address}{'STREETNUM'} = $data->{'STREETNUM'};
+	$cleanData->{$address}{'STREETADDRESS'} = $data->{'STREETADDRESS'};
+	$cleanData->{$address}{'APT'} = $data->{'APTNUM'};
 	$cleanData->{$address}{'CITY'} = $data->{'CITY'};
 	$cleanData->{$address}{'STATE'} = $data->{'STATE'};
 	$cleanData->{$address}{'ZIPCODE'} = $data->{'ZIPCODE'};
@@ -174,7 +194,7 @@ foreach my $address (keys %addresses) {
 				}
 				$cleanData->{$address}{'PHONE'}{$lastName} = substr($cleanData->{$address}{'PHONE'}{$lastName},0,length($cleanData->{$address}{'PHONE'}{$lastName})-2);
 		} else {
-			$cleanData->{$address}{'PHONE'}{$lastName} .= $phones[0];
+			$cleanData->{$address}{'PHONE'}{$lastName} .= 'TEST - ' . $phones[0];
 		}
 
 	}
@@ -183,7 +203,7 @@ foreach my $address (keys %addresses) {
 
 print 'CleanData: ' . Dumper($cleanData) if $debug;
 
-print "StreetNum,StreetName,City,State,ZipCode,LastName,FirstNames,Phones\n";
+print "StreetLoc,StreetNum,StreetName,Apt,FullAddress,City,State,ZipCode,LastName,FirstNames,Phones\n";
 
 foreach my $address ( keys %{$cleanData} ) {
 
@@ -192,8 +212,11 @@ foreach my $address ( keys %{$cleanData} ) {
 	# 
 	my @lastNameAry = (keys %{$cleanData->{$address}{'NAMES'}});
 	foreach my $lastName ( @lastNameAry ) {
+		print "$cleanData->{$address}{'STREETLOC'},";
 		print "$cleanData->{$address}{'STREETNUM'},";
 		print "$cleanData->{$address}{'STREETNAME'},";
+		print "$cleanData->{$address}{'APT'},";
+		print "$cleanData->{$address}{'STREETADDRESS'},";
 		print "$cleanData->{$address}{'CITY'},";
 		print "$cleanData->{$address}{'STATE'},";
 		print "$cleanData->{$address}{'ZIPCODE'},";
