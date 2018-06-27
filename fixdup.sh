@@ -1,7 +1,7 @@
 #!/bin/bash
 
-dataDir=data
-outputDir=output
+dataDir=data-2018-06
+outputDir=output-2018-06
 mkdir -p $outputDir
 
 
@@ -14,7 +14,9 @@ do
 
 	echo " ## Working on $fileName "
 
-	./fixdup.pl < $datafile > $outFile
+	./fixdup-2018.pl < $datafile > $outFile
+
+	echo '======================'
 
 done
 
