@@ -94,19 +94,27 @@ while (<>) {
 	}
 
 	#print Dumper(\@data);
-	
-	unless ($data[STREETADDRESS]) {
-		#print "Skipping - no address\n"; 
-		$noAddress++;
-		next;
-	}
-
+	#
 	# remove leading and trailing space from phone
+
 	$data[PHONE] =~ s/^\s+//g;
 	$data[PHONE] =~ s/\s+$//g;
 	$data[PHONE] =~ s/Not Available/NA/g;
+	
+	if  ( not $data[STREETADDRESS]) {
+		if (  $data[PHONE] ) {
+			if ( $data[PHONE] eq 'NA' ) {
+				#print "Skipping - no address\n"; 
+				$noAddress++;
+				next;
+			} else {
+				#print "setting street name to phone\n";
+				$data[STREETNAME] = 'PHONE TERRITORY';
+			}
+		}
+	}
 
-	# get names and phones
+	# get names 
 
 	# the following fields will be useful for sorting
 	#my $key = $data[STREETLOC] . '-' . $data[STREETADDRESS] . '-' . $data[CITY] . '-' . $aptNum;
@@ -129,7 +137,7 @@ while (<>) {
 
 print 'Addresses: ' , Dumper(\%addresses) if $debug;
 
-warn "$noAddress records skipped due to no address\n";
+warn "$noAddress records skipped due to no address and phone\n";
 warn "$dupAddress records skipped as duplicates\n";
 
 #exit;
