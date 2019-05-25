@@ -221,7 +221,7 @@ foreach my $address ( keys %{$cleanData} ) {
 		print "$cleanData->{$address}{'STATE'},";
 		print "$cleanData->{$address}{'ZIPCODE'},";
 		print "$lastName,";
-		print join(' ',@{$cleanData->{$address}{'NAMES'}{$lastName}}),',';
+		print join(' & ',@{$cleanData->{$address}{'NAMES'}{$lastName}}),',';
 		print $cleanData->{$address}{'PHONE'}{$lastName};
 
 		print "\n";

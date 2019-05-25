@@ -1,0 +1,12 @@
+
+# find the middle name:
+# grep -E '^[[:alpha:]]+\s+[[:alpha:]]+,' t.csv
+Timothy,Fleskes,15449 NW Melody Ct,Beaverton, OR,97006,(503) 645-4231,15449,NW,Melody,Ct,
+Harvey John,Fletcher,20638 SW Mabel St,Beaverton, OR,97006,(503) 439-9621,20638,SW,Mabel,St,
+L,Fletcher,,Beaverton, OR,97006,(503) 645-1901,,,,,
+Bonnie,Flick,1196 NW Weybridge Way,Beaverton, OR,97006,Not Available,1196,NW,Weybridge,Way,
+Jonah,Flick,18735 SW Lisa Ct,Beaverton, OR,97006,Not Available,18735,SW,Lisa,Ct,
+Michael,Flinker,155 NE 80th Ave,Beaverton, OR,97006,Not Available,155,NE,80th,Ave,
+Christina,Flinn,16994 NW Shadow Hills Ln,Beaverton, OR,97006,Not Available,16994,NW,Shadow Hills,Ln,
+Dave,Flint,P.O. Box       5837,Beaverton, OR,97006,Not Available,P.O.,Box,,,
+Randy,Flood,628 NE Adwick Dr,Beaverton, OR,97006,Not Available,628,NE,Adwick,Dr,
